@@ -3,37 +3,27 @@ import { View, Text, TextInput, TouchableOpacity, SafeAreaView, Image, Alert } f
 import { Ionicons } from '@expo/vector-icons';
 import images from '@/constants/images';
 import { useNavigation } from '@react-navigation/native';
-import { Link, useRouter } from 'expo-router';
-import { getCurrentUser, signIn } from "../../lib/appwrite";
-import { useGlobalContext } from "../../context/GlobalProvider";
+import { Link, Redirect, router } from 'expo-router';
+// import { getCurrentUser, signIn } from "../../lib/appwrite";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function SingIn() {
 
+    const { session,signin } = useAuth();
+
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { setUser, setIsLogged } = useGlobalContext();
 
-    const router = useRouter();
     const submit = async () => {
         if (email === "" || password === "") {
       Alert.alert("Error", "Please fill in all fields");
     }
-
-    try {
-      await signIn(email, password);
-      const result = await getCurrentUser();
-      setUser(result);
-      setIsLogged(true);
-
-      Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } 
-
+    await signin({email, password});
     };
+
+    if (session) return <Redirect href="/(app)/home" />
 
     return (
         <SafeAreaView className="flex-1 bg-black px-5 justify-center">

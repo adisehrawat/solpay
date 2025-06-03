@@ -3,7 +3,7 @@ import "./global.css";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { StatusBar } from 'expo-status-bar'
-import GlobalProvider from "../context/GlobalProvider";
+import { AuthProvider } from "../context/AuthContext";
 // import { CardStyleInterpolators } from '@react-navigation/stack';
 SplashScreen.preventAutoHideAsync();
 
@@ -31,18 +31,15 @@ export default function RootLayout() {
         return null;
     }
     return (
-        <GlobalProvider>
+        <AuthProvider>
             <Stack
                 screenOptions={{
                     headerShown: false,
                     animation: "slide_from_right",
                 }}
             >
-                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             </Stack>
             <StatusBar style="light" />
-        </GlobalProvider>
+        </AuthProvider>
     );
 }

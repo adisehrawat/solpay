@@ -3,9 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, SafeAreaView, Image, Alert } f
 import { Ionicons } from '@expo/vector-icons';
 import images from '@/constants/images';
 import { useNavigation } from '@react-navigation/native';
-import { Link, useRouter } from 'expo-router';
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { createUser } from "../../lib/appwrite";
+import { Link, Redirect } from 'expo-router';
+import { useAuth } from "../context/AuthContext";
+
 
 export default function SignUp() {
 
@@ -13,23 +13,21 @@ export default function SignUp() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
-    const { setUser, setIsLogged } = useGlobalContext();
+    const { session,createUser } = useAuth();
+
 
     const submit = async () => {
         if (!username || !email || !password) {
             Alert.alert('Error', 'Please fill all details');
         }
         try {
-            const result = await createUser(email, password, username);
-            setUser(result);
-            setIsLogged(true);
-            router.replace("/home");
+            const newUser = await createUser({email, password, username});
         } catch (error) {
             Alert.alert("Error", error.message);
             console.log("error in submit");
             console.log(error);
         }
+        if (session) return <Redirect href="/(app)/home" />
 
     };
     return (
